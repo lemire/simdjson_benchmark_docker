@@ -2,6 +2,7 @@ import os
 import os.path
 import json
 import shutil
+import ftplib
 
 #
 #	config
@@ -18,6 +19,8 @@ local_repo = basedir.format("simdjson")
 bench_scripts = basedir.format("/benchmark_scripts/")
 bench_results = basedir.format("/benchmark_results/")
 lastcommit_file = basedir.format("lastcommit")
+
+uploadFTP = True
 
 #
 #	main code
@@ -59,6 +62,7 @@ if not os.path.exists(local_repo):
 
 with open(lastcommit_file, 'r') as lcf:
 	lastcommit = lcf.read().replace("\n", "")
+	lcf.close()
 
 print(":: Resume benchmarks from commit " + lastcommit)
 
@@ -104,3 +108,26 @@ print(":: Benchmarks performed on {} commits".format(str(len(commits))))
 with open(lastcommit_file, 'w') as lcf:
 	lcf.write(commits[len(commits) - 1].split(" ")[0])
 	lcf.close()
+
+# 5. upload the results to the web server
+
+if uploadFTP:
+	ftpaddr = '35.206.98.224'
+	ftpuser = 'simdjson@lemire.me'
+
+	with open('ftppass', 'r') as passfile:
+		ftppass = passfile.read().replace("\n", "")
+		passfile.close()
+
+	print(":: Uploading the results to the server")
+	session = ftplib.FTP(ftpaddr, ftpuser, ftppass)
+
+	for bench in benchmarks:
+		jsonname = bench + ".json"
+		f = open(bench_results + jsonname, 'rb')
+		print(":: Upload {} to the server".format(jsonname))
+		session.storbinary("STOR benchmark_results/{}".format(jsonname), f)
+		f.close()
+
+	session.close()
+	print(":: All results uploaded")
