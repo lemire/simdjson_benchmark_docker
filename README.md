@@ -15,7 +15,7 @@
 * To create the container, run `docker build -t containername .`.
 * A cron job should ask the container to run the script: `docker run containername '/usr/bin/python3 /benchmarks/commits.py'`.
 * You may want to edit the configuration. It can be done by editing the script. To do so, you'll have to start a bash on the container: `docker run -it containername /bin/bash`, then you can `vim /benchmarks/commits.py`.
-* If you want to use FTP to upload the results to an external server, you will have to create `/benchmarks/ftppass` and put the FTP password inside. Same process, start a bash and edit the file.
+* If you want to use FTP to upload the results to an external server, you will have to create `/benchmarks/ftppass` and put the FTP password inside. Same process, start a bash and edit the file. The server should contain a `benchmark_results` folder and the `index.html` and `main.js` files. The FTP home for the server should be the same as the web server root.
 
 ## Evolutions
 * Since the tool was originally intended to generate a single image graph and send it to a server, it is using several JSON files to store the results. The whole file are uploaded to the server each time, it is not optimal. Using a database on the server and simply inserting the new rows of data would be a better solution, and would be a much more precise way of selecting data when we need to create the graph.
