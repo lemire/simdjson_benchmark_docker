@@ -1,5 +1,6 @@
 import os
 import os.path
+import sys
 import json
 import shutil
 import ftplib
@@ -13,7 +14,7 @@ gitclone_cmd = "git clone {} {}"
 
 distant_repo = "https://github.com/simdjson/simdjson.git"
 
-basedir = "{}/".format(os.getcwd()) + "{}"
+basedir = "{}/".format(sys.path[0]) + "{}"
 
 local_repo = basedir.format("simdjson")
 bench_scripts = basedir.format("/benchmark_scripts/")
