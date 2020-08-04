@@ -90,7 +90,7 @@ for i in range(len(commits) - 1, -1, -1):
 	os.mkdir("./build")
 	os.chdir("./build")
 	os.system("cmake ..")
-	os.system("make")
+	os.system("cmake --build . --target parse")
 
 	for bench in benchmarks:
 		out = os.popen("python " + bench_scripts + bench).read().replace("\n", "")
