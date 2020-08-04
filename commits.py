@@ -93,8 +93,11 @@ for i in range(len(commits) - 1, -1, -1):
 	os.system("cmake --build . --target parse")
 
 	for bench in benchmarks:
-		out = os.popen("python " + bench_scripts + bench).read().replace("\n", "")
-		result_objects[bench][commit[0]] = {'date': commit[1], 'speed': float(out)}
+                try:
+		    out = os.popen("python " + bench_scripts + bench).read().replace("\n", "")
+		    result_objects[bench][commit[0]] = {'date': commit[1], 'speed': float(out)}
+                except:
+                    pass
 
 	os.chdir(local_repo)
 	remaining_commits = remaining_commits - 1
