@@ -89,7 +89,7 @@ for i in range(len(commits) - 1, -1, -1):
 	os.system("git checkout " + commit[0])
 	os.mkdir("./build")
 	os.chdir("./build")
-	os.system("cmake ..")
+	os.system("cmake .. -DSIMDJSON_COMPETITION=OFF -DSIMDJSON_GOOGLE_BENCHMARKS=OFF")
 	os.system("cmake --build . --target parse")
 
 	for bench in benchmarks:
