@@ -9,7 +9,7 @@ import ftplib
 #       config
 #
 
-gitlog_cmd = "git log --date=unix --pretty='format:%H %ad' {}..HEAD"
+gitlog_cmd = "git log --date=unix --topo-order --pretty='format:%H %ad' {}..HEAD"
 gitclone_cmd = "git clone {} {}"
 
 distant_repo = "https://github.com/simdjson/simdjson.git"
