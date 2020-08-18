@@ -67,7 +67,8 @@ with open(lastcommit_file, 'r') as lcf:
 
 print(":: Resume benchmarks from commit " + lastcommit)
 
-
+if(len(lastcommit) == 0):
+  print(":: WARNING, you have an empty last commit!!!!")
 # 3. we pull and get a list of the new commits
 
 os.chdir(local_repo)
@@ -77,6 +78,8 @@ commits = os.popen(gitlog_cmd.format(lastcommit)).read().split("\n")
 remaining_commits = len(commits)
 print(":: Will peform benchmarks on {} commits".format(str(remaining_commits)))
 
+if(remaining_commits == 0):
+  sys.exit(0)
 # 4. perform all benchmarks for each commit
 
 for i in range(len(commits) - 1, -1, -1):
