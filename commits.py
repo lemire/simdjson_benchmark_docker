@@ -9,7 +9,7 @@ import ftplib
 #       config
 #
 
-gitlog_cmd = "git log --date=unix --topo-order --pretty='format:%H %ad' {}..HEAD"
+gitlog_cmd = "git -C {} log --date=unix --topo-order --pretty='format:%H %ad' {}..HEAD"
 gitclone_cmd = "git clone {} {}"
 
 distant_repo = "https://github.com/simdjson/simdjson.git"
@@ -70,11 +70,19 @@ print(":: Resume benchmarks from commit " + lastcommit)
 if(len(lastcommit) == 0):
   print(":: WARNING, you have an empty last commit!!!!")
 # 3. we pull and get a list of the new commits
-
+print("local repo is at ", local_repo)
 os.chdir(local_repo)
+print("current directory: ",os.getcwd())
 print(":: Pull")
-os.system("git pull")
-commits = os.popen(gitlog_cmd.format(lastcommit)).read().split("\n")
+os.system("git -C {} remote -v".format(local_repo))
+os.system("git -C {} pull  ".format(local_repo))
+print(":: command ",gitlog_cmd.format(local_repo, lastcommit)) 
+comm = os.popen(gitlog_cmd.format(local_repo, lastcommit))
+commits = comm.read().split("\n")
+err = comm.close()
+if(err):
+    print("error : ",err)
+    sys.exit(err)
 remaining_commits = len(commits)
 print(":: Will peform benchmarks on {} commits".format(str(remaining_commits)))
 
@@ -86,15 +94,15 @@ for i in range(len(commits) - 1, -1, -1):
         commit = commits[i].split(" ")
         print(":: Perform benchmarks on commit {} ({} commits remaining).. building..".format(commit[0], str(remaining_commits)))
 
-        if os.path.exists("./build"):
-                shutil.rmtree("./build")
+        if os.path.exists("./build"+commit[0]):
+                shutil.rmtree("./build"+commit[0])
 
-        os.system("git checkout " + commit[0])
-        os.mkdir("./build")
-        os.chdir("./build")
-        os.system("cmake .. -DSIMDJSON_COMPETITION=OFF -DSIMDJSON_GOOGLE_BENCHMARKS=OFF")
+        os.system("git -C {} checkout {}".format(local_repo, commit[0]))
+        os.mkdir("./build"+commit[0])
+        os.chdir("./build"+commit[0])
+        os.system("cmake {} -DSIMDJSON_COMPETITION=OFF -DSIMDJSON_GOOGLE_BENCHMARKS=OFF".format(local_repo))
         os.system("cmake --build . --target parse")
-
+        print("current directory: ",os.getcwd())
         for bench in benchmarks:
                 try:
                     out = os.popen("python " + bench_scripts + bench).read().replace("\n", "")
@@ -105,7 +113,7 @@ for i in range(len(commits) - 1, -1, -1):
         os.chdir(local_repo)
         remaining_commits = remaining_commits - 1
 
-os.system("git checkout master")
+os.system("git -C {} checkout master".format(local_repo))
 os.chdir(basedir.format(""))
 
 clean_exit()
