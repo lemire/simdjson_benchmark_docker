@@ -9,20 +9,20 @@
 <body>
 	<div id="chart" style="width: 900px; height: 500px"></div>
 	<script>
-		var files = ["parse_canada", "parse_twitter", "parse_gsoc-2018"];
 		var jsons = [];
-
-		for(let i = 0; i < files.length; i++) {
-			jsons.push(load_json("/benchmark_results/" + files[i] + ".py.json"));
+		data_source = load_json("benchmark_results.json");
+		var keys = Object.keys(data_source)
+		for (let [key, value] of Object.entries(data_source)) {
+			jsons.push(value);
 		}
 
 		google.charts.load('current', {packages: ['corechart']});
 		google.charts.setOnLoadCallback(drawCommits);
 
 		function drawCommits() {
-			var data = new google.visualization.arrayToDataTable(commit_data_array(jsons, files));
+			var data = new google.visualization.arrayToDataTable(commit_data_array(jsons, keys));
 			var options = {
-				title: "Simdjson parsing performance per commit",
+				title: "The simdjson parsing performance per commit",
 				hAxis: {title: "Commit"},
 				vAxis: {title: "Speed (GBps)"}
 			};
