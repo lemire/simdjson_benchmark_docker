@@ -5,4 +5,4 @@ run apt-get install -y vim clang-format sudo python cmake g++ g++-9 git clang++-
 run gcc --version
 run cmake --version
 run python3 --version
-run git clone https://github.com/yoannlr/simdjson_benchmark_docker /benchmarks
+run git clone https://github.com/lemire/simdjson_benchmark_docker /benchmarks
