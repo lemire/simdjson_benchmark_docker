@@ -31,7 +31,7 @@ function commit_data_array(jsons, benchnames) {
 	for(c of get_commits(jsons)) {
 		row = [c];
 		for(let i = 0; i < jsons.length; i++) {
-			if(jsons[i][c].speed != null) row[i + 1] = jsons[i][c].speed;
+			if((jsons[i][c] != null) && (jsons[i][c].speed != null)) row[i + 1] = jsons[i][c].speed;
 			else row[i + 1] = 0;
 		}
 		arr.push(row);
